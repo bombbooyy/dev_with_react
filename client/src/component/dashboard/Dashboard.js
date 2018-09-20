@@ -1,0 +1,81 @@
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { getCurrentProfile, deleteProfile } from '../../actions/profileAction';
+import Spinner from '../common/spinner';
+import ProfileActions from './ProfileActions';
+import Experience from './Experience';
+import Education from './Education';
+
+
+class Dashboard extends Component {
+
+	componentDidMount() {
+		this.props.getCurrentProfile();
+	}
+
+	onDeleteClick(e) {
+		this.props.deleteProfile();
+	}
+
+	render() {
+		const { user } = this.props.auth;
+		const { profile, loading } = this.props.profile;
+
+		let dashContent ;
+		if(profile == null || loading)
+			dashContent = <Spinner />
+		else  //check if user has profile
+			if(Object.keys(profile).length > 0) {
+				dashContent = (
+					<div>
+						<p className='lead text-muted'> Welecome, <Link to={`/profile/${user.name}`}>{user.name}</Link> </p>
+						<ProfileActions />
+						<Education  education={profile.education} />
+						<Experience  experience={profile.experience} />
+
+						<div style={{marginBottom: '60px'}}/>
+						<button onClick={this.onDeleteClick.bind(this)} className='btn btn-danger'>Delete My Account
+						</button>
+					</div>
+					)
+			} else{
+				dashContent = (
+					<div>
+						<p className="lead text-muted">Welcome { user.name }</p>
+						<p>You have not yet setup a profile, please add some info</p>
+						<Link to='/create-profile' className='btn btn-lg btn-info'>Profile</Link>
+					</div>
+					
+				)
+			}
+
+		return (
+			<div className="dashboard">
+				<div className="container">
+					<div className="row">
+						<div className="col-md-12">
+							<h1 className="display-4">Dashboard</h1>
+							{dashContent}
+						</div>
+					</div>
+				</div>
+			</div>
+		);
+	};
+};
+
+Dashboard.propTypes = {
+	getCurrentProfile: PropTypes.func.isRequired,
+	deleteProfile: PropTypes.func.isRequired,
+	profile: PropTypes.object.isRequired,
+	auth: PropTypes.object.isRequired
+}
+
+const mapStateToProps = (state) => ({
+	profile: state.profile,
+	auth: state.auth
+});
+
+export default connect(mapStateToProps, { getCurrentProfile,deleteProfile })(Dashboard);

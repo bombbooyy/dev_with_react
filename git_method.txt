@@ -1,0 +1,7 @@
+git init    => to initialize the project
+
+git status  => to check staging
+
+git add filename => files
+		.        => all files
+
