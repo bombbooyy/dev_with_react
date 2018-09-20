@@ -2,6 +2,13 @@ git init    => to initialize the project
 
 git status  => to check staging
 
-git add filename => files
+git add /filename => files
 		.        => all files
 
+giit commit -m "describe"
+
+git log  --oneline        => log of every commit
+
+git checkout /id     => check the log
+
+git checkout master  => check brunch
